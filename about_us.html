@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Flow+</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/arbiepeligro/flowplus.ph/refs/heads/main/web_logo.png" type="image/x-icon">
+    <link href="https://fonts.cdnfonts.com/css/gilroy-bold" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-blue: #0000ff;
+            --background-main: #000000;
+            --text-light: #e0e8ff;
+            --text-white: #ffffff;
+            --accent-glow: rgba(0, 100, 255, 0.9);
+            --faq-question-bg: rgba(0, 50, 150, 0.2);
+            --faq-question-hover-bg: rgba(0, 70, 180, 0.3);
+            --faq-answer-bg: rgba(0, 20, 80, 0.15);
+            --content-max-width: 950px;
+            --icon-bg: rgba(0, 80, 200, 0.2);
+            --icon-hover-bg: rgba(0, 100, 255, 0.3);
+        }
+
+        body {
+            font-family: 'gilroy-bold', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-main);
+            color: var(--text-light);
+            line-height: 1.7;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160vw;
+            height: 60vh;
+            background: radial-gradient(ellipse at center, 
+                                        var(--primary-blue) 10%, 
+                                        rgba(0,0,255,0.3) 40%,  
+                                        rgba(0,0,255,0) 70%
+                                       );
+            z-index: -1;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        body::before { top: -30vh; }
+        body::after { bottom: -30vh; }
+
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-header {
+            backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            height: 60px; 
+            display: flex;
+            /* justify-content: center; /* Removed to allow back arrow on left */
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: var(--content-max-width);
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            margin: 0 auto; /* Center the header content itself */
+            position: relative; /* For positioning back arrow */
+        }
+        
+        .back-to-spa { /* Style for the new back arrow */
+            position: absolute;
+            left: 0px; /* Adjust as needed, considering padding of .header-content */
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 1.5em;
+            padding: 8px; /* Clickable area */
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .back-to-spa:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        .back-to-spa .material-symbols-outlined {
+            font-size: 28px; /* Icon size */
+            display: block; /* Ensure proper rendering */
+        }
+
+
+        .about-header .header-title {
+            color: var(--text-white);
+            font-size: 1.6em;
+            font-weight: 700;
+            margin: 0;
+            flex-grow: 1; /* Allow title to take space */
+            text-align: center; /* Center title if back arrow takes space */
+            /* If back arrow is present, to truly center title, more complex flex might be needed
+               or simply adjust padding/margin if title looks off-center.
+               For now, text-align: center on a flex-grow item works well. */
+        }
+
+        .about-container {
+            max-width: var(--content-max-width);
+            margin: 0 auto;
+            padding: 90px 20px 40px 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .about-section {
+            padding: 20px 15px;
+            margin-bottom: 50px;
+            width: 100%;
+            max-width: 750px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+
+        .about-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about-section h2 {
+            font-size: 2.3em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--text-white);
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 0 8px rgba(0, 120, 255, 0.5);
+        }
+        .about-section h2::after {
+            content: '';
+            display: block;
+            width: 70px;
+            height: 3px;
+            background-color: var(--accent-glow);
+            margin: 8px auto 0;
+            border-radius: 2px;
+            opacity: 0.8;
+        }
+
+        .about-section p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            color: var(--text-light);
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #company-info .company-logo-container {
+            margin-bottom: 20px;
+        }
+        #company-info .company-logo {
+            max-width: 260px;
+            height: auto;
+            filter: drop-shadow(0 0 15px rgba(0, 120, 255, 0.6));
+        }
+
+        .service-logo-container {
+            margin-bottom: 20px;
+        }
+        .service-logo {
+            width: 130px;
+            height: auto;
+            max-height: 130px;
+            object-fit: contain;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .service-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .partner {
+            margin-bottom: 30px;
+            padding: 15px 0;
+        }
+        .partner-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .partner-logo {
+            height: 50px;
+            width: auto;
+            max-width: 160px;
+            object-fit: contain;
+            transition: transform 0.2s ease; /* Added for potential hover effect */
+        }
+        .partner-logo:hover { /* Optional general hover effect */
+            transform: scale(1.05);
+        }
+
+        .filter-bw { /* Black and white filter class - only for specified logos now */
+            filter: grayscale(100%);
+        }
+        .filter-bw:hover {
+            /* filter: grayscale(0%); */ /* Keep commented if no hover unfilter */
+        }
+
+        .partner-logo.tmdb { height: 40px; }
+        .partner-logo.cignal { height: 45px; }
+        .partner-logo.iwanttfc { height: 35px; }
+        .partner-logo.newsapi { height: 40px; } /* Added style for NewsAPI logo */
+
+
+        .partner-logo-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .partner-header h3 {
+            margin: 0;
+            font-size: 1.5em;
+            color: var(--text-white);
+        }
+        .partner-content p {
+            color: var(--text-light);
+            font-size: 0.95em;
+            margin-bottom: 15px;
+        }
+
+        .suggested-posters, .suggested-channels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        .suggested-posters img {
+            width: 75px;
+            height: auto;
+            aspect-ratio: 2 / 3;
+            object-fit: cover;
+            border-radius: 5px;
+            background-color: rgba(0,0,0,0.3);
+            border: 1px solid rgba(0, 80, 200, 0.2);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .suggested-posters img:hover {
+            transform: scale(1.08);
+            border-color: rgba(0, 120, 255, 0.5);
+        }
+        .suggested-posters .loading-text {
+            color: var(--text-light);
+            width: 100%;
+        }
+
+        .channel-logo-circle {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 100, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .channel-logo-circle:hover {
+            transform: scale(1.08);
+            border-color: rgba(0, 120, 255, 0.6);
+        }
+        .channel-logo-circle img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        /* FAQ Section */
+        .faq-item {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .faq-question {
+            font-family: 'gilroy-bold', sans-serif;
+            background-color: var(--faq-question-bg);
+            color: var(--text-white);
+            border: 1px solid var(--card-border);
+            padding: 14px 18px;
+            width: 100%;
+            text-align: left;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-question::after {
+            content: 'expand_more';
+            font-family: 'Material Symbols Outlined';
+            font-size: 1.3em;
+            font-weight: normal;
+            transition: transform 0.3s ease;
+            color: var(--text-light);
+        }
+        .faq-question.active::after {
+            transform: rotate(180deg);
+        }
+        .faq-question:hover {
+            background-color: var(--faq-question-hover-bg);
+        }
+        .faq-answer {
+            background-color: var(--faq-answer-bg);
+            padding: 0 18px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding-top 0.4s ease-out, padding-bottom 0.4s ease-out;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid var(--card-border);
+            border-top: none;
+        }
+        .faq-answer p {
+            margin: 0;
+            padding: 16px 0;
+            color: var(--text-light);
+            text-align: left;
+        }
+
+        /* Available & Follow Sections */
+        .qr-code-container {
+            margin: 20px 0;
+        }
+        .qr-code-container img {
+            width: 150px;
+            height: 150px;
+            background-color: white;
+            padding: 3px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-blue);
+        }
+        .qr-code-label {
+            display: block;
+            margin-top: 10px;
+            font-size: 1em;
+            color: var(--text-light);
+        }
+        .app-store-info {
+            font-size: 1em;
+            color: var(--text-light);
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .app-store-info p { margin-bottom: 15px; }
+
+        .app-store-badge {
+            max-height: 45px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .social-icons {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .social-icon {
+            display: inline-block;
+            width: 48px;
+            height: 48px;
+            background-color: var(--icon-bg);
+            color: var(--text-white);
+            border-radius: 50%;
+            text-decoration: none;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            overflow: hidden;
+        }
+        .social-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .social-icon:hover {
+            background-color: var(--icon-hover-bg);
+            transform: scale(1.1);
+        }
+
+
+        .about-footer {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 25px 0;
+            margin-top: 30px;
+        }
+        .footer-content {
+           text-align: center;
+           justify-content: center;
+        }
+        .about-footer p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 0.95em;
+        }
+
+
+        @media (max-width: 768px) {
+            :root { --content-max-width: 90%; }
+            body::before, body::after {
+                width: 200vw; height: 55vh; opacity: 0.5;
+            }
+            body::before { top: -25vh; }
+            body::after { bottom: -25vh; }
+
+            .about-header .header-title { font-size: 1.4em; }
+            .about-section h2 { font-size: 2em; }
+            .partner-header h3 { font-size: 1.3em; }
+            .faq-question { font-size: 1em; }
+            .suggested-posters img { width: 65px; }
+            .channel-logo-circle { width: 55px; height: 55px; }
+            .qr-code-container img { width: 130px; height: 130px; }
+            .app-store-badge { max-height: 40px; }
+        }
+
+        @media (max-width: 480px) {
+            :root { --content-max-width: 100%; }
+
+            .about-container { padding: 70px 15px 30px 15px; }
+            .header-content, .footer-content { padding: 0 15px; }
+            .about-header { height: 50px; }
+            .about-header .header-title { font-size: 1.25em; }
+            .about-section { padding: 15px 10px; margin-bottom: 40px; }
+            .about-section h2 { font-size: 1.8em; }
+            .about-section p { font-size: 1em; }
+            .partner-header h3 { font-size: 1.2em; }
+            .suggested-posters img { width: calc(33.33% - 6px); gap: 6px; }
+            .channel-logo-circle { width: 50px; height: 50px; }
+            .faq-question { font-size: 0.95em; padding: 10px 12px; }
+            .faq-answer p { padding: 12px 0; }
+            .qr-code-container img { width: 120px; height: 120px; }
+            .social-icon { width: 40px; height: 40px; }
+            .app-store-badge { max-height: 35px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="about-header">
+            <div class="header-content">
+                <a href="/flowplus.ph" class="back-to-spa" title="Back to Flow+ Home">
+                    <span class="material-symbols-outlined">arrow_back_ios_new</span>
+                </a>
+                <span class="header-title">About Us</span>
+            </div>
+        </header>
+
+        <main class="about-container">
+            <section id="company-info" class="about-section">
+                <div class="company-logo-container">
+                    <img src="https://raw.githubusercontent.com/arbiepeligro/flow.ph/refs/heads/main/flow-streaming.png" alt="Flow Streaming Co., Ltd. Logo" class="company-logo">
+                </div>
+                <h2>Flow Streaming Co., Ltd.</h2>
+                <p>
+                    Flow Streaming Co., Ltd. is a forward-thinking digital entertainment company dedicated to
+                    providing seamless and accessible streaming experiences. We believe in the power of content
+                    to connect, entertain, and inform. Our mission is to break down barriers to quality
+                    entertainment, offering a diverse range of viewing options with a focus on user convenience
+                    and innovation.
+                </p>
+            </section>
+
+            <section id="our-service" class="about-section">
+                <h2>Our Services</h2> <!-- Changed to "Our Services" -->
+                <div class="service-logo-container">
+                    <img src="https://raw.githubusercontent.com/arbiepeligro/flowplus.ph/refs/heads/main/flow_plus_logo.png" alt="Flow+ Logo" class="service-logo">
+                </div>
+                <p>
+                    Flow+ is our flagship streaming service, designed to bring you a world of entertainment
+                    at your fingertips. It offers a curated selection of live TV channels and an extensive
+                    library of on-demand movies and TV series. With an intuitive interface and robust
+                    streaming technology, Flow+ aims to be your go-to destination.
+                </p>
+                
+                <!-- Added Flow News -->
+                <div class="service-logo-container" style="margin-top: 40px;">
+                    <img src="https://raw.githubusercontent.com/Flow-Streaming-Co-Ltd/flownews.com/refs/heads/host/flow_news_1.png" alt="Flow News Logo" class="service-logo">
+                </div>
+                <p>
+                    Flow News is our dedicated news aggregation platform, delivering up-to-date news articles
+                    from various reputable sources. Stay informed with curated news content, easily accessible
+                    and organized for your convenience.
+                </p>
+            </section>
+
+            <section id="our-partners" class="about-section">
+                <h2>Our Partners</h2>
+                <div class="partner">
+                    <div class="partner-header">
+                        <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB Logo" class="partner-logo tmdb">
+                        <h3>TMDB (Movies/TV Series)</h3>
+                    </div>
+                    <div class="partner-content">
+                        <p>Powering our vast library of movies and TV series information.</p>
+                        <div class="suggested-posters" id="tmdb-suggested-posters">
+                            <p class="loading-text">Loading suggested content...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="partner">
+                    <div class="partner-header">
+                        <div class="partner-logo-group">
+                            <img src="https://i.ibb.co/zh7LwgVN/f236f8d6-cc4d-4c83-8590-a61d4d3fbccf-removalai-preview.png" alt="Cignal Play Logo" class="partner-logo cignal">
+                            <img src="https://static.wikia.nocookie.net/tvradioschedules/images/7/73/IWantTFC_Wordmark_Logo_2020.png" alt="iWantTFC Logo" class="partner-logo iwanttfc">
+                        </div>
+                        <h3>Cignal Play & iWantTFC (Live TV Channels)</h3>
+                    </div>
+                    <div class="partner-content">
+                        <p>Bringing you a diverse range of popular live TV channels.</p>
+                        <div class="suggested-channels" id="live-suggested-channels">
+                            <div class="channel-logo-circle"><img src="https://static.wikia.nocookie.net/abscbn/images/7/74/Kapamilya_Channel_3D_Logo.png" alt="Kapamilya Channel"></div>
+                            <div class="channel-logo-circle"><img src="https://static.wikia.nocookie.net/tv5network/images/9/95/TV5_HD_2024.svg" alt="TV5 HD"></div>
+                            <div class="channel-logo-circle"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/OneNewsPH_logo.svg/1200px-OneNewsPH_logo.svg.png" alt="One News"></div>
+                            <div class="channel-logo-circle"><img src="https://img.mytfc.com/cmsroot/abscms/media/mytfctv/channels/anc/anc-logo.png?ext=.png" alt="ANC"></div>
+                            <div class="channel-logo-circle"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Channel_NewsAsia_logo_%28shape_only%29.svg/220px-Channel_NewsAsia_logo_%28shape_only%29.svg.png" alt="CNA"></div>
+                            <div class="channel-logo-circle"><img src="https://static.wikia.nocookie.net/dxs/images/a/aa/NBA_TV_Philippines_Logo_2020.png" alt="NBA TV PH"></div>
+                            <div class="channel-logo-circle"><img src="https://upload.wikimedia.org/wikipedia/en/c/cd/PBA_Rush_logo.png" alt="PBA Rush"></div>
+                            <div class="channel-logo-circle"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/One_Sports_logo.svg/1200px-One_Sports_logo.svg.png" alt="One Sports"></div>
+                            <div class="channel-logo-circle"><img src="https://static.wikia.nocookie.net/hbo-max/images/1/1e/HBO-WhiteLogo.png" alt="HBO"></div>
+                            <div class="channel-logo-circle"><img src="https://static.wikia.nocookie.net/logopedia/images/e/e9/Hits_%28Southeast_Asia%29.svg" alt="Hits"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Added NewsAPI Partner -->
+                <div class="partner">
+                    <div class="partner-header">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_hQdOBW63tdHP7dyYYlcqb4Udtd53Be1fhrPSRVieYBtSszpAeeLs141S&s=10" alt="NewsAPI Logo" class="partner-logo newsapi">
+                        <h3>NewsAPI (News Content)</h3>
+                    </div>
+                    <div class="partner-content">
+                        <p>Providing access to a wide range of global news articles and headlines for Flow News.</p>
+                        <!-- Placeholder for potential future display of news snippets or logos -->
+                        <!-- <div class="suggested-news-sources" id="newsapi-suggested-sources">
+                            <p class="loading-text">Loading news sources...</p>
+                        </div> -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="available-on" class="about-section">
+                <h2>WATCH NOW</h2>
+                <div class="qr-code-container">
+                    <img src="https://raw.githubusercontent.com/arbiepeligro/flowplus.ph/refs/heads/main/qrcode.png" alt="QR Code for Flow+">
+                    <span class="qr-code-label">SCAN HERE!</span>
+                </div>
+            </section>
+                <div class="app-store-info">
+                    <p>Soon on:</p>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/1280px-Google_Play_Store_badge_EN.svg.png" alt="Get it on Google Play" class="app-store-badge filter-bw">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/2560px-Download_on_the_App_Store_Badge.svg.png" alt="Download on the App Store" class="app-store-badge filter-bw">
+                </div>
+            </section>
+
+            <section id="follow-us" class="about-section">
+                <h2>Follow & Like</h2>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/profile.php?id=61575808937225" target="_blank" rel="noopener noreferrer" class="social-icon" title="Flow+ on Facebook">
+                        <img src="https://www.edigitalagency.com.au/wp-content/uploads/Facebook-icon-white-PNG-large-size-768x768.png" alt="Facebook" class="filter-bw">
+                    </a>
+                </div>
+            </section>
+
+            <section id="faq" class="about-section">
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-item">
+                    <button class="faq-question">What is Flow Streaming Co., Ltd.?</button>
+                    <div class="faq-answer">
+                        <p>Flow Streaming Co., Ltd. is the company behind the Flow+ streaming service and Flow News. We are focused on delivering high-quality live TV, on-demand content, and up-to-date news through innovative and user-friendly platforms. Our aim is to make diverse entertainment and information easily accessible.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">What kind of content can I find on Flow+ and Flow News?</button>
+                    <div class="faq-answer">
+                        <p>Flow+ offers a mix of live television channels spanning news, entertainment, sports, movies, and more. Additionally, we provide access to information and links for a vast library of on-demand movies and TV series through our partnership with TMDB. Flow News provides curated news articles from various sources, powered by NewsAPI.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Is Flow+ a free service?</button>
+                    <div class="faq-answer">
+                        <p>Flow+ primarily aggregates and provides access to freely available streams and content information. We strive to offer a "zero cost" experience for the core features. Some linked third-party services or specific premium content might have their own subscription models, which are separate from Flow+.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">How do I watch live channels?</button>
+                    <div class="faq-answer">
+                        <p>You can browse live channels through our "Live TV" section on Flow+, categorized for easy navigation. Simply click on a channel to start streaming. Ensure you have a stable internet connection for the best viewing experience.</p>
+                    </div>
+                </div>
+                 <div class="faq-item">
+                    <button class="faq-question">Where does Flow+ get its movie and TV show information?</button>
+                    <div class="faq-answer">
+                        <p>We partner with The Movie Database (TMDB) to provide comprehensive information for movies and TV series, including posters, ratings, and overviews. Flow+ helps you discover this content.</p>
+                    </div>
+                </div>
+                 <div class="faq-item">
+                    <button class="faq-question">Where does Flow News get its news articles?</button>
+                    <div class="faq-answer">
+                        <p>Flow News partners with NewsAPI to aggregate and display a wide array of news articles from reputable global sources, ensuring you have access to timely and diverse information.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="about-footer">
+            <div class="footer-content">
+                <p>© <span id="currentYear"></span> Flow Streaming Co., Ltd.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current year in footer
+            const currentYearElement = document.getElementById('currentYear');
+            if (currentYearElement) {
+                currentYearElement.textContent = new Date().getFullYear();
+            }
+
+            // FAQ Accordion
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                const answer = item.querySelector('.faq-answer');
+
+                if (question && answer) {
+                    question.addEventListener('click', () => {
+                        const isActive = question.classList.contains('active');
+                        const currentlyOpenAnswer = document.querySelector('.faq-answer.active');
+                        const currentlyOpenQuestion = document.querySelector('.faq-question.active');
+
+                        if (currentlyOpenAnswer && currentlyOpenAnswer !== answer) {
+                            currentlyOpenAnswer.classList.remove('active');
+                            currentlyOpenAnswer.style.maxHeight = null;
+                            currentlyOpenAnswer.style.paddingTop = '0';
+                            currentlyOpenAnswer.style.paddingBottom = '0';
+                            if (currentlyOpenQuestion) {
+                                currentlyOpenQuestion.classList.remove('active');
+                            }
+                        }
+
+                        if (!isActive) {
+                            question.classList.add('active');
+                            answer.classList.add('active');
+                            answer.style.paddingTop = '18px'; // Ensure this matches CSS for consistency
+                            answer.style.paddingBottom = '18px'; // Ensure this matches CSS for consistency
+                            answer.style.maxHeight = answer.scrollHeight + "px";
+                        } else {
+                            question.classList.remove('active');
+                            answer.classList.remove('active');
+                            answer.style.maxHeight = null;
+                            answer.style.paddingTop = '0';
+                            answer.style.paddingBottom = '0';
+                        }
+                    });
+                }
+            });
+
+            // TMDB Suggested Posters (Placeholder)
+            const tmdbPostersContainer = document.getElementById('tmdb-suggested-posters');
+            if (tmdbPostersContainer) {
+                setTimeout(() => {
+                    if (!tmdbPostersContainer) return;
+                    tmdbPostersContainer.innerHTML = '';
+                    const placeholderPosterCount = 10;
+                    const examplePosters = [
+                 "https://image.tmdb.org/t/p/w342/yFHHfHcUgGAxziP1C3lLt0q2T4s.jpg","https://image.tmdb.org/t/p/w500/oLxWocqheC8XbXbxqJ3x422j9PW.jpg","https://image.tmdb.org/t/p/w185//xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg", "https://image.tmdb.org/t/p/w185//zfbJGx5rZ0qr1zXN0x2yS3KBHvg.jpg", "https://image.tmdb.org/t/p/w185//7WsyChQLEftFiDOVTGkv3hFpyyt.jpg","https://image.tmdb.org/t/p/w185//d5NXSklXo0qyIYkgV94XAgMIckC.jpg", "https://image.tmdb.org/t/p/w185//8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg","https://image.tmdb.org/t/p/w185//uJYYbTLF2ED4j7uF8aD27dF9315.jpg", "https://image.tmdb.org/t/p/w185//xGuRIYkmGlL2nHLgHAPWOv8d2lT.jpg"
+                    ];
+                    for (let i = 0; i < placeholderPosterCount; i++) {
+                        const img = document.createElement('img');
+                        img.src = examplePosters[i % examplePosters.length];
+                        img.alt = `Suggested Movie/TV ${i + 1}`;
+                        img.onerror = function() { this.src = 'https://via.placeholder.com/75x113/000000/FFFFFF?text=N/A'; this.alt = 'Image N/A'; };
+                        tmdbPostersContainer.appendChild(img);
+                    }
+                }, 1000);
+            }
+
+            // Intersection Observer for animations
+            const sections = document.querySelectorAll('.about-section');
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
