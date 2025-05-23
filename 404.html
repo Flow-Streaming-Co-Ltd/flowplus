@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | Flow+</title>
+    <!-- Gilroy Font -->
+    <link href="https://fonts.cdnfonts.com/css/gilroy-bold" rel="stylesheet" />
+    <!-- Link to your main stylesheet (for CSS Variables if used) -->
+    <link rel="stylesheet" href="/flowplus.ph/style.css">
+    <style>
+        /* Import Gilroy Bold specifically for 404 if not globally available from style.css */
+        /* @import url('https://fonts.cdnfonts.com/css/gilroy-bold'); */ /* Already in <head> via <link> */
+
+        :root { /* Define fallback variables if not inherited from style.css */
+            --bg-gradient-end: #000;
+            --text-primary: #fff;
+            --text-secondary: #bbb;
+            --accent-primary: #ff4d00;
+            --accent-secondary: #e63c00; /* A slightly darker accent for hover */
+            --card-bg: #1a1a1a;
+        }
+
+        body {
+            font-family: 'gilroy-bold', sans-serif;
+            background: var(--bg-gradient-end);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        header.header-404 {
+            margin-bottom: 30px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 20px; /* Add some padding if it's at the very top */
+        }
+
+        header.header-404 img#logoImage404 {
+            height: 35px; /* Adjust as needed */
+            width: auto;
+        }
+
+        .container-404 {
+            background-color: var(--card-bg);
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            max-width: 500px;
+        }
+
+        .container-404 h1.status-code-404 {
+            font-size: 5rem; /* Adjusted from 6rem to fit better */
+            color: var(--accent-primary);
+            margin-top: 0;
+            margin-bottom: 5px; /* Reduced margin */
+        }
+
+        .container-404 p.message-404 {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .container-404 a.home-button-404 {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: var(--accent-primary);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 700; /* Gilroy bold is already applied to body, this ensures it */
+            font-size: 1rem;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .container-404 a.home-button-404:hover {
+            background-color: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+
+        .footer-404 {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+    </style>
+    <script>
+      // Store the full path that led to 404 (pathname + search + hash)
+      const path = location.pathname + location.search + location.hash;
+      // Store it in sessionStorage. The main app (index.html's script) will read this.
+      sessionStorage.redirect = path;
+    </script>
+    <!-- Immediately redirect to the base of the SPA -->
+    <!-- The SPA's router (in script.js) will then handle the stored 'redirect' path -->
+    <meta http-equiv="refresh" content="0;URL='/flowplus.ph/'">
+</head>
+<body>
+    <header class="header-404">
+        <img src="https://i.ibb.co/qY5yHZHj/flow-plus-logo.png" alt="Flow+ Logo" id="logoImage404">
+    </header>
+
+    <main class="container-404">
+        <h1 class="status-code-404">404</h1>
+        <p class="message-404">Oops! The page you're looking for doesn't seem to exist, or might have been moved.</p>
+        <p class="message-404">You'll be redirected to the homepage shortly.</p>
+        <a href="/flowplus.ph/" class="home-button-404">Go to Homepage Now</a>
+    </main>
+
+    <footer class="footer-404">
+        © <span id="year-404"></span> Flow Streaming Co., Ltd.
+    </footer>
+
+    <script>
+        // Simple script for 404 page if needed, e.g., setting the year
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearElement = document.getElementById('year-404');
+            if (yearElement) {
+                yearElement.textContent = new Date().getFullYear();
+            }
+        });
+    </script>
+</body>
+</html>
