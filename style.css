@@ -371,12 +371,17 @@ a.logo img {
         align-items: flex-start;
         max-width: 40%;
         margin-left: calc(5% + 20px);
-        gap: 15px;
+        gap: 10px;
         position: absolute;
-        bottom: 15%;
+        bottom: 10%;
         left: 0;
         padding: 20px;
         box-sizing: border-box;
+    }
+    
+     .feature-content {
+        margin-left: calc(var(--desktop-nav-width) + 30px); /* Example: nav width + some gap */
+        max-width: calc(40% - var(--desktop-nav-width)); /* Adjust max width if needed */
     }
 
     .feature-logo {
@@ -390,11 +395,11 @@ a.logo img {
     }
 
     .feature-title {
-        font-size: 2.8em;
+        font-size: 2em;
     }
 
     .feature-desc {
-        font-size: 1.2em;
+        font-size: 1em;
         max-width: 90%;
         opacity: 0.85;
     }
@@ -412,7 +417,7 @@ a.logo img {
         background: rgba(255,255,255,0.4);
     }
     .feature-dot.active {
-        background-color: #fff;
+        background-color: #ff4d00;
     }
 
     .section-title-container {
