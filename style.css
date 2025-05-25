@@ -318,7 +318,6 @@ a.logo img {
 
     #mainContainer {
         padding-top: 0 !important;
-        padding-left: var(--desktop-nav-width) !important;
         max-width: 100%;
         box-sizing: border-box;
     }
