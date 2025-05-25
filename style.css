@@ -324,12 +324,12 @@ a.logo img {
     }
 
     .main-content { /* Home section, feature slider is above it */
-        padding: 25px 40px;
+        padding: 25px 40px 25px calc(var(--desktop-nav-width) + 40px);
         max-width: calc(1600px - var(--desktop-nav-width));
         margin: 0 auto;
     }
     .plus-page, .categories-page {
-        padding: 85px 40px 25px 40px; /* top (for topbar) right bottom left */
+        padding: 85px 40px 25px calc(var(--desktop-nav-width) + 40px);
         max-width: calc(1600px - var(--desktop-nav-width));
         margin: 0 auto;
     }
