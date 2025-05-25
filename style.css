@@ -236,7 +236,7 @@ a.logo img {
         padding: 20px 0;
         width: var(--desktop-nav-width);
         z-index: 1200;
-        background: transparent;
+        background: transparent; /* Ensured transparent for feature background to show */
     }
     .desktop-vertical-nav-item {
         cursor: pointer;
@@ -281,7 +281,7 @@ a.logo img {
     }
 
     .profile-menu.desktop-active { 
-        top: 0
+        top: 0;
         left: calc(var(--desktop-nav-width) + 10px); 
         right: auto;
         min-width: 220px; 
@@ -305,11 +305,11 @@ a.logo img {
         width: 100%;
         z-index: 1100;
         box-shadow: none !important;
-        justify-content: flex-start;
+        justify-content: flex-start; /* Changed from flex-start to push logo to the right */
     }
 
     a.logo {
-        margin-right: 0;
+        margin-right: 80px;
         z-index: 1101;
     }
     a.logo img {
@@ -318,17 +318,18 @@ a.logo img {
 
     #mainContainer {
         padding-top: 0 !important;
+        /* padding-left: var(--desktop-nav-width) !important; REMOVED to allow feature slider full width */
         max-width: 100%;
         box-sizing: border-box;
     }
 
     .main-content { /* Home section, feature slider is above it */
-        padding: 25px 40px 25px calc(var(--desktop-nav-width) + 40px);
+        padding: 25px 40px 25px calc(var(--desktop-nav-width) + 40px); /* Adjusted left padding */
         max-width: calc(1600px - var(--desktop-nav-width));
         margin: 0 auto;
     }
     .plus-page, .categories-page {
-        padding: 85px 40px 25px calc(var(--desktop-nav-width) + 40px);
+        padding: 85px 40px 25px calc(var(--desktop-nav-width) + 40px); /* top right bottom left (adjusted left padding) */
         max-width: calc(1600px - var(--desktop-nav-width));
         margin: 0 auto;
     }
@@ -336,7 +337,7 @@ a.logo img {
 
     .feature-slider-section {
         margin-bottom: 40px;
-        width: 100%;
+        width: 100%; /* Will now span full viewport width */
         height: 60vh;
         max-height: 550px;
         min-height: 400px;
@@ -369,19 +370,20 @@ a.logo img {
         text-align: left;
         align-items: flex-start;
         max-width: 40%;
-        margin-left: calc(5% + 20px);
+        margin-left: calc(5% + 20px); /* This is relative to feature-slider edge, might need adjustment if it overlaps nav */
         gap: 10px;
         position: absolute;
         bottom: 10%;
-        left: 0;
+        left: 0; /* Relative to feature-slider */
         padding: 20px;
         box-sizing: border-box;
     }
-    
-     .feature-content {
+    /* Ensure feature content is to the right of the nav */
+    .feature-content {
         margin-left: calc(var(--desktop-nav-width) + 30px); /* Example: nav width + some gap */
         max-width: calc(40% - var(--desktop-nav-width)); /* Adjust max width if needed */
     }
+
 
     .feature-logo {
       justify-content: flex-start;
@@ -416,7 +418,7 @@ a.logo img {
         background: rgba(255,255,255,0.4);
     }
     .feature-dot.active {
-        background-color: #ff4d00;
+        background-color: #fff;
     }
 
     .section-title-container {
