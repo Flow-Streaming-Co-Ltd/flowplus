@@ -13,17 +13,11 @@
 </head>
 <body>
   <div class="topbar">
-    <a href="#" class="logo" title="Reload flow+"> <!-- onclick removed, handled by JS -->
+    <a href="#" class="logo" title="Reload flow+">
         <img src="https://raw.githubusercontent.com/Flow-Streaming-Co-Ltd/flowplus/refs/heads/host/flow_plus_logo.png" alt="flow+ Logo" id="logoImage">
     </a>
-    <div class="desktop-nav-links"> <!-- Hidden on desktop by CSS -->
-        <span class="desktop-nav-item active" id="navHomeDesktop" data-target-page="homeSection">Home</span>
-        <span class="desktop-nav-item" id="navStreamDesktop" data-target-page="plusPage">Stream</span>
-        <span class="desktop-nav-item" id="navCategoriesDesktop" data-target-page="categoriesPage">Live TV</span>
-    </div>
-    <div class="topbar-icons"> <!-- Hidden on desktop by CSS -->
+    <div class="topbar-icons">
         <span class="material-symbols-outlined" id="searchBtn" title="Search">search</span>
-        <span class="material-symbols-outlined" id="profileBtn" title="Profile">account_circle</span>
     </div>
   </div>
 
@@ -31,73 +25,131 @@
     <span class="desktop-vertical-nav-item" id="desktopNavSearch" title="Search">
         <span class="material-symbols-outlined">search</span>
     </span>
-    <span class="desktop-vertical-nav-item" id="desktopNavHome" data-target-page="homeSection" title="Home">
+    <span class="desktop-vertical-nav-item active" id="desktopNavHome" data-target-page="homeSection" title="Home">
         <span class="material-symbols-outlined">home</span>
-    </span>
-    <span class="desktop-vertical-nav-item" id="desktopNavStream" data-target-page="plusPage" title="Stream">
-        <span class="material-symbols-outlined">play_circle</span>
     </span>
     <span class="desktop-vertical-nav-item" id="desktopNavCategories" data-target-page="categoriesPage" title="Live TV">
         <span class="material-symbols-outlined">live_tv</span>
     </span>
-    <div class="profile-button-wrapper">
-      <span class="desktop-vertical-nav-item" id="desktopNavProfile" title="Profile">
-          <span class="material-symbols-outlined">account_circle</span>
-      </span>
-    </div>
+    <span class="desktop-vertical-nav-item" id="desktopNavProfile" data-target-page="profilePage" title="Profile">
+        <span class="material-symbols-outlined">account_circle</span>
+    </span>
   </div>
 
-  <div class="profile-menu" id="profileMenu">
-      <a href="about_us.html" class="profile-menu-item" id="navAboutUsPageLink">
-          <span class="material-symbols-outlined profile-item-icon">info</span>
-          <span class="profile-item-text">About Us</span>
-      </a>
-      <a href="https://flow-streaming-co-ltd.github.io/flownews/" target="_blank" rel="noopener noreferrer" class="profile-menu-item" id="navFlowNewsLink">
-          <img src="https://raw.githubusercontent.com/Flow-Streaming-Co-Ltd/flownews/refs/heads/host/flow_news_3.png" alt="Flow News Logo" style="height: 22px; width: auto;">
-          <span class="profile-item-text"></span>
-      </a>
-      <!-- Any other profile menu items -->
-  </div>
-  
+  <div class="home-hero-background" id="homeHeroBackground"></div>
+
   <main id="mainContainer">
-    <div class="feature-slider-section" id="featureSliderSection">
-        <div class="feature-slider" id="featureSlider">
-            <p class="loading-text">Loading features...</p>
+    <div class="main-content active" id="homeSection" role="tabpanel" aria-labelledby="navHome">
+        <div class="hero-content-area-wrapper" id="heroContentAreaWrapper">
+            <div class="home-hero-content" id="homeHeroContent">
+                <p class="loading-text" style="color: #fff; text-align:center; width:100%;">Loading hero...</p>
+            </div>
+        </div>
+        <div class="home-page-content-below-hero" id="homePageContentBelowHero">
+            <div class="section-title-container">
+                <div class="section-title"><span class="material-symbols-outlined">live_tv</span>TOP CHANNELS</div>
+            </div>
+            <div class="horizontal-list" id="topChannelsRow"> <p class="loading-text">Loading channels...</p> </div>
         </div>
     </div>
-    <div class="main-content active" id="homeSection" role="tabpanel" aria-labelledby="navHome">
-        <div class="section-title-container"> <div class="section-title"><span class="material-symbols-outlined">live_tv</span>TOP CHANNELS</div> </div>
-        <div class="horizontal-list" id="topChannelsRow"> <p class="loading-text">Loading channels...</p> </div>
-        <div class="section-title-container"> <div class="section-title"><span class="material-symbols-outlined">trending_up</span>TRENDING TOP 10</div> <div class="title-toggle-buttons"> <button class="toggle-button active" id="homeTrendingTodayBtn" data-period="day">Today</button> <button class="toggle-button" id="homeTrendingWeekBtn" data-period="week">This Week</button> </div> </div>
-        <div class="horizontal-list" id="homeTrendingRow"> <p class="loading-text">Loading trending...</p> </div>
-    </div>
-    <div class="plus-page" id="plusPage" role="tabpanel" aria-labelledby="navStream" hidden>
-        <div class="plus-header"> Discover Movies & TV <span class="beta-badge">Powered by TMDb</span> </div>
-        <div class="section-title-container"> <div class="plus-section-title"><span class="material-symbols-outlined">theaters</span>NOW STREAMING</div> </div>
-        <div class="plus-movies-row" id="tmdbNowPlayingMoviesRow"> <p class="loading-text">Loading movies...</p> </div>
-        <div class="section-title-container"> <div class="plus-section-title"><span class="material-symbols-outlined">star_rate</span>TOP RATED MOVIES</div> </div>
-        <div class="plus-movies-row" id="tmdbTopRatedMoviesRow"> <p class="loading-text">Loading movies...</p> </div>
-        <div class="section-title-container"> <div class="plus-section-title"><span class="material-symbols-outlined">live_tv</span>AIRING TODAY TV</div> </div>
-        <div class="plus-movies-row" id="tmdbAiringTodayTVRow"> <p class="loading-text">Loading TV shows...</p> </div>
-        <div class="section-title-container"> <div class="plus-section-title"><span class="material-symbols-outlined">stars</span>TOP RATED TV</div> </div>
-        <div class="plus-movies-row" id="tmdbTopRatedTVRow"> <p class="loading-text">Loading TV shows...</p> </div>
-    </div>
+
     <div class="categories-page" id="categoriesPage" role="tabpanel" aria-labelledby="navCategories" hidden>
         <div class="categories-header">Live TV</div>
         <div class="category-pills-container" id="categoryPillsContainer"> <p class="loading-text">Loading filters...</p> </div>
         <div id="categoryGroups"> <p class="loading-text">Loading categories...</p> </div>
     </div>
+
+    <div class="profile-page" id="profilePage" role="tabpanel" aria-labelledby="navProfile" hidden>
+        <div class="profile-header-mobile">
+            <span class="material-symbols-outlined profile-page-icon">account_circle</span>
+            <div class="profile-coming-soon-badge">COMING SOON!</div>
+        </div>
+        <div class="profile-menu-list">
+            <a href="about_us.html" class="profile-menu-list-item" id="profileAboutUsLink">
+                <span class="material-symbols-outlined">info</span>
+                <span>About Us</span>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61560926960219" target="_blank" rel="noopener noreferrer" class="profile-menu-list-item" id="profileFacebookLink">
+                <svg class="profile-item-svg-icon" fill="currentColor" viewBox="0 0 24 24" width="24px" height="24px" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.03998C6.48 2.03998 2 6.51998 2 12.0399C2 17.0899 5.64 21.2299 10.44 21.9099V14.8899H7.9V12.0399H10.44V9.84998C10.44 7.33998 11.93 5.96998 14.22 5.96998C15.31 5.96998 16.45 6.15998 16.45 6.15998V8.61998H15.19C13.95 8.61998 13.56 9.38998 13.56 10.1799V12.0399H16.34L15.89 14.8899H13.56V21.9299C18.36 21.2499 22 17.0899 22 12.0399C22 6.51998 17.52 2.03998 12 2.03998Z"></path></svg>
+                <span>Like us on Facebook</span>
+            </a>
+            <a href="privacy_policy.html" class="profile-menu-list-item" id="profilePrivacyLink">
+                <span class="material-symbols-outlined">shield</span>
+                <span>Privacy Policy</span>
+            </a>
+            <a href="terms_of_service.html" class="profile-menu-list-item" id="profileTermsLink">
+                <span class="material-symbols-outlined">gavel</span>
+                <span>Terms of Service</span>
+            </a>
+        </div>
+        <div class="profile-page-footer-info">
+            <p>Version 3.0</p>
+            <p>© 2024 Flow Streaming Co., Ltd. All Rights Reserved.</p>
+        </div>
+    </div>
   </main>
 
   <footer class="footer-nav" role="tablist" aria-label="Main Navigation">
-    <div class="footer-item selected" id="navHome" role="tab" aria-selected="true" aria-controls="homeSection" onclick="switchTabAndUrl('homeSection', this)"> <span class="material-symbols-outlined footer-icon">home</span> <span class="footer-label">Home</span> </div>
-    <div class="footer-item pl" id="navStream" role="tab" aria-selected="false" aria-controls="plusPage" onclick="switchTabAndUrl('plusPage', this)"> <span class="material-symbols-outlined footer-icon">play_circle</span> <span class="footer-label">Stream</span> </div>
-    <div class="footer-item" id="navCategories" role="tab" aria-selected="false" aria-controls="categoriesPage" onclick="switchTabAndUrl('categoriesPage', this)"> <span class="material-symbols-outlined footer-icon">live_tv</span> <span class="footer-label">Live TV</span> </div>
+    <div class="footer-item selected" id="navHome" role="tab" aria-selected="true" aria-controls="homeSection" onclick="switchTabAndUrl('homeSection')"> <span class="material-symbols-outlined footer-icon">home</span> <span class="footer-label">Home</span> </div>
+    <div class="footer-item" id="navCategories" role="tab" aria-selected="false" aria-controls="categoriesPage" onclick="switchTabAndUrl('categoriesPage')"> <span class="material-symbols-outlined footer-icon">live_tv</span> <span class="footer-label">Live TV</span> </div>
+    <div class="footer-item" id="navProfile" role="tab" aria-selected="false" aria-controls="profilePage" onclick="switchTabAndUrl('profilePage')"> <span class="material-symbols-outlined footer-icon">person</span> <span class="footer-label">Profile</span> </div>
   </footer>
 
-  <div class="player-container" id="playerContainer"> <div class="player-box" id="playerBoxExpanded"> <span class="material-symbols-outlined player-minimize" onclick="minimizePlayer()" title="Minimize Player">keyboard_arrow_down</span> <span class="material-symbols-outlined player-back-landscape" id="playerBackLandscapeBtn" title="Minimize Player">arrow_back_ios_new</span> <div id="shaka-player-container"> <video id="shaka-player" style="width:100%;height:100%;" controls autoplay poster="https://media-hosting.imagekit.io/737e3bd020364a85/Adobe%20Express%20-%20file%20(1).png?Expires=1841702531&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=w~U3akzU1ZRF85a~8oKFxhfHyCbfwM~FOcp3Thmzf6GDbBHiYc5RYA7j~2ACWpN~CEpS18D3kjIcrcmcMB7sJh~AsvKHzKuk-Vm8STfNkwMEfV9QHcBRW5aq7vE02UJAuJcs-rrdPSpD1eidOu66x1JNykbQI7rRXd1Z6GJdl4UUcp9ZORqrmIYoEkTs38Ml3kEABKMcPRg5hy8aRTIbbqvYACKx~8UXwZRiTzsJiPRMNmpcPk9tqiOWNpicxiv~ZEONzXwOQ-ASiSjMkF0aC3TFWWmZg-Lcl4ngVdGlBe4Vxbf0RFWl4-4LARcQq2lfeHno3KZrN4jt8SM6oWUDKw__" allowfullscreen webkit-playsinline playsinline></video> <div class="player-info-overlay" id="playerInfoOverlay"> <img id="playerOverlayLogo" src="" alt="Channel Logo"/> <div class="player-info-overlay-text"> <div id="playerOverlayChannelName">Channel Name</div> <div id="playerOverlayCategoryName"> <span class="material-symbols-outlined">sensors</span> <span id="playerOverlayCategoryText">Category</span> </div> </div> </div> </div> <div class="player-details-expanded"> <div class="player-title" id="playerTitleExpanded"></div> <div class="player-sub"> <span id="playerSubExpanded"></span> <span class="material-symbols-outlined player-live-icon" id="playerLiveIconExpanded">sensors</span> </div> </div> </div> <div class="player-minimized-bar" id="playerBarMinimized" onclick="expandPlayer()"> <img id="minimizedLogo" src="" alt="Channel Logo" class="minimized-logo"> <div class="minimized-info"> <div class="minimized-title" id="minimizedTitle">Channel Name</div> <span class="material-symbols-outlined minimized-status-icon">sensors</span> </div> <div class="minimized-controls"> <span class="material-symbols-outlined player-close-minimized" onclick="closePlayerCompletely(event)" title="Close Player">close</span> </div> </div> </div>
-  <div class="search-modal" id="searchModal"> <div class="search-bar-modal"> <input type="text" id="searchInput" placeholder="Search movies, series, or channels..." autocomplete="off" aria-label="Search Content"/> <span class="material-symbols-outlined" onclick="closeSearchModal()" title="Close Search">close</span> </div> <div class="search-results-modal" id="searchResultsModal"> <p class="loading-text" style="display: none;">Searching...</p> </div> </div>
+  <div class="player-container" id="playerContainer">
+    <!-- Full Page Player Box -->
+    <div class="player-box-fullpage" id="playerBoxFullPage">
+        <span class="material-symbols-outlined player-minimize-btn" id="playerMinimizeBtn" title="Minimize Player">keyboard_arrow_down</span>
+        
+        <div class="shaka-player-wrapper-fullpage" id="shakaPlayerWrapperFullPage">
+            <video id="shaka-player" style="width:100%;height:100%;" controls autoplay poster="https://raw.githubusercontent.com/Flow-Streaming-Co-Ltd/flowplus/refs/heads/host/flow_plus_blackbg.png" allowfullscreen webkit-playsinline playsinline></video>
+        </div>
 
+        <div class="player-details-area-fullpage">
+            <div class="player-info-left-fullpage">
+                <div class="player-title-fullpage" id="playerTitleFullPage">Channel Name</div>
+                <div class="player-category-fullpage" id="playerCategoryFullPage">Category</div>
+            </div>
+            <span class="material-symbols-outlined player-live-icon-fullpage" id="playerLiveIconFullPage">sensors</span>
+        </div>
+
+        <div class="player-suggested-channels-fullpage" id="playerSuggestedChannelsFullPage">
+            <div class="suggested-channels-header-fullpage">
+                <span class="material-symbols-outlined">subscriptions</span>
+                SUGGESTED CHANNELS
+            </div>
+            <div class="suggested-channels-list-fullpage" id="suggestedChannelsListFullPage">
+                <p class="loading-text">Loading suggestions...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Minimized Player Bar (above footer) -->
+    <div class="player-minimized-bar" id="playerMinimizedBar">
+        <div class="minimized-logo-container">
+            <img id="minimizedBarLogo" src="" alt="Channel Logo" class="minimized-bar-logo-img">
+            <span class="material-symbols-outlined minimized-bar-logo-live-icon">sensors</span>
+        </div>
+        <div class="minimized-bar-info">
+            <div class="minimized-bar-title" id="minimizedBarTitle">Channel Name</div>
+            <div class="minimized-bar-category" id="minimizedBarCategory">Category</div>
+        </div>
+        <div class="minimized-bar-controls">
+            <span class="material-symbols-outlined minimized-bar-close" id="minimizedBarCloseBtn" title="Close Player">close</span>
+        </div>
+    </div>
+  </div>
+
+  <div class="search-modal" id="searchModal">
+    <div class="search-bar-modal">
+      <input type="text" id="searchInput" placeholder="Search channels..." autocomplete="off" aria-label="Search Content"/>
+      <span class="material-symbols-outlined" id="searchModalCloseBtn" title="Close Search">close</span>
+    </div>
+    <div class="search-results-modal" id="searchResultsModal">
+      <p class="loading-text" style="display: none;">Searching...</p>
+    </div>
+  </div>
+
+  <script src="streams.js"></script>
   <script src="script.js" defer></script>
 </body>
 </html>
