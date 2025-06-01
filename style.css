@@ -51,8 +51,8 @@
     --channel-card-horizontal-gap: 14px;
     --category-list-padding: 18px;
 
-    --logo-desktop-bg-light: rgba(255, 255, 255, 0.85);
-    --logo-desktop-bg-dark: rgba(31, 31, 31, 0.85);
+    --logo-desktop-bg-light: rgba(255, 255, 255, 0.85); /* Kept for potential other logo uses, but made transparent for main logo */
+    --logo-desktop-bg-dark: rgba(31, 31, 31, 0.85); /* Kept for potential other logo uses */
     --always-white: #ffffff;
 }
 
@@ -137,7 +137,7 @@ body.home-at-top .home-page-content-below-hero { background-color: transparent; 
 .home-page-content-below-hero .horizontal-list { padding-left: var(--category-list-padding); padding-right: var(--category-list-padding); }
 .home-page-content-below-hero .horizontal-list { gap: var(--channel-card-horizontal-gap); }
 .section-title-container { display: flex; justify-content: space-between; align-items: center; margin: 25px 0 14px 0px; }
-.section-title { font-size: 1.8em; font-weight: 800; letter-spacing: 0.3px; color: var(--text-primary); user-select: none; transition: color 0.3s ease; display: flex; align-items: center; gap: 8px; margin: 0; }
+.section-title { font-size: 1.2em; font-weight: 800; letter-spacing: 0.3px; color: var(--text-primary); user-select: none; transition: color 0.3s ease; display: flex; align-items: center; gap: 8px; margin: 0; }
 body.home-at-top .section-title { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.7); }
 body.home-at-top .section-title .material-symbols-outlined { color: var(--accent-primary); }
 
@@ -162,7 +162,7 @@ body.home-at-top .loading-text:not(.search-results-modal .loading-text) { color:
 .category-pill.active { background-color: var(--category-pill-active-bg); color: var(--category-pill-active-text); }
 .category-pill.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
 .category-group { margin-bottom: 28px; margin-top: 25px; }
-.category-title { font-size: 1.6em; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; transition: color 0.3s ease; display: flex; align-items: center; gap: 8px; }
+.category-title { font-size: 1.2em; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; transition: color 0.3s ease; display: flex; align-items: center; gap: 8px; }
 .category-title .material-symbols-outlined { font-size: 1em; color: var(--accent-primary); }
 .category-channels { display: flex; gap: var(--channel-card-horizontal-gap); overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; padding-bottom: 10px; min-height: calc(var(--channel-card-width) * 9 / 16 + 20px); align-items: flex-start; box-sizing: border-box; }
 .category-channels::-webkit-scrollbar { display: none;}
@@ -373,7 +373,7 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
 
    a.logo img { height: 30px; }
    .topbar .material-symbols-outlined { font-size: 26px; }
-   .section-title, .category-title { font-size: 1.6em; }
+   .section-title, .category-title { font-size: 1.2em; } /* Updated: was 1.6em */
    .channel-card { width: calc(var(--channel-card-width) * 0.85); }
    .channel-card .channel-live-icon { font-size: 16px; top: 4px; right: 4px; }
    .footer-item .footer-icon { font-size: 22px; }
@@ -398,20 +398,38 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
 
 @media (min-width: 1024px) {
     :root {
-        --channel-card-width: 200px;
+        /* --channel-card-width: 200px; /* This variable is now directly applied below */
         --desktop-nav-width: 70px;
         --category-list-padding-desktop: 40px;
     }
+    /* Desktop specific re-definition of --channel-card-width.
+       This ensures it's 200px in this media query context for rules using it. */
+    :root {
+        --channel-card-width: 200px;
+    }
+
     body { padding-bottom: 0 !important; } /* No footer nav, no body padding for it */
     body.player-minimized-bar-active { padding-bottom: var(--minimized-player-bar-height) !important; } /* Padding for minimized bar */
     .footer-nav { display: none !important; }
 
-    .topbar a.logo { position: fixed; bottom: 25px; right: 25px; z-index: 1600; padding: 10px 15px; border-radius: 10px; background-color: var(--logo-desktop-bg-light); box-shadow: 0 2px 10px rgba(0,0,0,0.15); transition: background-color 0.3s ease; height: auto; }
-    body.dark-mode .topbar a.logo { background-color: var(--logo-desktop-bg-dark); }
-    .topbar a.logo img { height: 28px; }
+    /* MODIFIED: Logo position and appearance */
+    .topbar a.logo {
+        position: fixed;
+        top: 15px; /* Adjusted from bottom/right */
+        left: 15px;  /* Adjusted from bottom/right */
+        z-index: 1600;
+        padding: 0; /* Removed padding as background is transparent */
+        background-color: transparent !important; /* Removed background */
+        box-shadow: none !important; /* Removed shadow */
+        height: auto;
+        /* transition: none; Removed background transition */
+    }
+    /* body.dark-mode .topbar a.logo - no longer needed due to transparent bg */
+    .topbar a.logo img { height: 32px; /* Adjusted size slightly if needed */ }
+    /* body.home-at-top .topbar a.logo - no longer needed for bg */
+    /* body.dark-mode.home-at-top .topbar a.logo - no longer needed for bg */
+
     .topbar { padding-left: 25px; padding-right: 25px; left: var(--desktop-nav-width); width: calc(100% - var(--desktop-nav-width)); justify-content: flex-end; }
-    body.home-at-top .topbar a.logo { background-color: var(--logo-desktop-bg-light); }
-    body.dark-mode.home-at-top .topbar a.logo { background-color: var(--logo-desktop-bg-dark); }
     .topbar .topbar-icons { display: none !important; }
 
     .desktop-vertical-nav { display: flex; flex-direction: column; align-items: center; gap: 20px; position: fixed; left: 0; top: 50%; transform: translateY(-50%); padding: 20px 0; width: var(--desktop-nav-width); z-index: 1200; background: transparent !important; }
@@ -423,7 +441,14 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
     .desktop-vertical-nav-item.active::after { content: ''; position: absolute; left: 0px; top: 50%; transform: translateY(-50%); width: 4px; height: 60%; background-color: var(--always-white) !important; border-radius: 0 2px 2px 0; transition: height 0.2s ease-in-out; }
 
     #mainContainer { padding-top: var(--topbar-height); padding-left: var(--desktop-nav-width); }
-    .categories-page, .profile-page { padding: 30px var(--category-list-padding-desktop); max-width: 1600px; margin: 0 auto; box-sizing: border-box; }
+    
+    /* MODIFIED: Profile/Categories page layout */
+    .categories-page, .profile-page {
+        padding: 30px var(--category-list-padding-desktop);
+        /* max-width: 1600px; Removed for full-width behavior like home section rows */
+        /* margin: 0 auto; Removed for full-width behavior */
+        box-sizing: border-box;
+    }
     .categories-page .categories-header, .categories-page .category-title, .categories-page .category-pills-container, .categories-page .category-channels,
     .player-suggested-channels-fullpage .suggested-channels-header-fullpage,
     .player-suggested-channels-fullpage .suggested-channels-list-fullpage { padding-left: 0; padding-right: 0; }
@@ -444,13 +469,17 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
     .horizontal-list::-webkit-scrollbar-track, .category-channels::-webkit-scrollbar-track, .suggested-channels-list-fullpage::-webkit-scrollbar-track { background: var(--scrollbar-track); border-radius: 4px; }
     .horizontal-list::-webkit-scrollbar-thumb, .category-channels::-webkit-scrollbar-thumb, .suggested-channels-list-fullpage::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 4px; }
     .horizontal-list:hover::-webkit-scrollbar-thumb, .category-channels:hover::-webkit-scrollbar-thumb, .suggested-channels-list-fullpage:hover::-webkit-scrollbar-thumb { background-color: #888; body.light-mode & { background-color: #a0a0a0; } }
-    .channel-card { width: var(--channel-card-width); }
+    
+    /* MODIFIED: Ensure general channel cards use the desktop width consistently */
+    .channel-card {
+        width: var(--channel-card-width); /* Explicitly use the 200px var */
+    }
     .channel-card:hover { transform: scale(1.05); box-shadow: 0 8px 25px var(--card-shadow); }
     .channel-card::before { filter: blur(var(--channel-card-blur-amount)) brightness(100%) saturate(100%); }
-    .category-channels { min-height: calc(var(--channel-card-width) * 9 / 16 + 30px); }
+    .category-channels { min-height: calc(var(--channel-card-width) * 9 / 16 + 30px); } /* Uses the 200px var */
     .category-pill { padding: 9px 18px; font-size: 0.95em; }
     .section-title-container { margin: 35px 0 20px 0; }
-    .section-title { font-size: 1.6em; }
+    .section-title, .category-title { font-size: 1.2em; } /* Updated: was 1.6em for section-title */
 
     .search-modal .search-bar-modal { max-width: 600px; margin: 30px auto 20px auto; }
     .search-results-modal { max-width: 600px; margin: 0 auto; }
@@ -461,7 +490,7 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
     .player-category-fullpage { font-size: 1em; }
     .player-suggested-channels-fullpage .suggested-channels-header-fullpage,
     .player-suggested-channels-fullpage .suggested-channels-list-fullpage { padding-left: var(--category-list-padding-desktop); padding-right: var(--category-list-padding-desktop); }
-    .suggested-channels-list-fullpage .channel-card { width: var(--channel-card-width); }
+    .suggested-channels-list-fullpage .channel-card { width: var(--channel-card-width); } /* Will use 200px */
 
     .player-minimized-bar { bottom: 0 !important; left: var(--desktop-nav-width) !important; width: calc(100% - var(--desktop-nav-width)) !important; border-left: 1px solid var(--player-minimized-bar-border); }
 }
