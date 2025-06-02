@@ -14,10 +14,9 @@ const categoryGroups = document.getElementById("categoryGroups");
 
 const playerContainer = document.getElementById('playerContainer');
 const playerBoxFullPage = document.getElementById('playerBoxFullPage');
-const playerMinimizeBtn = document.getElementById('playerMinimizeBtn'); // New minimize button on full page
-const shakaPlayerWrapperFullPage = document.getElementById('shakaPlayerWrapperFullPage'); // Wrapper for margins/radius
+const playerMinimizeBtn = document.getElementById('playerMinimizeBtn');
+const shakaPlayerWrapperFullPage = document.getElementById('shakaPlayerWrapperFullPage');
 const shakaVideoElement = document.getElementById('shaka-player');
-// const shakaPlayerContainer = document.getElementById('shaka-player-container'); // This ID might be part of Shaka's internal structure or our wrapper. Let's use wrapper.
 
 const playerTitleFullPage = document.getElementById('playerTitleFullPage');
 const playerCategoryFullPage = document.getElementById('playerCategoryFullPage');
@@ -48,11 +47,11 @@ const topbarElement = document.querySelector('.topbar');
 
 // --- PLAYER STATE VARIABLES ---
 let shakaPlayer = null;
-let isPlayerActive = false; // General flag: Is any player (full or minimized) active?
-let isPlayerFullPageVisible = false; // Is the full-page player UI visible?
-let isPlayerMinimizedBarVisible = false; // Is the minimized bar visible?
+let isPlayerActive = false;
+let isPlayerFullPageVisible = false;
+let isPlayerMinimizedBarVisible = false;
 let currentPlayingChannelData = null;
-let shakaControlsObserver = null; // For Shaka's own HTML5 fullscreen controls visibility
+let shakaControlsObserver = null;
 
 // --- UTILITY FUNCTIONS ---
 function slugify(text) { if (!text) return ''; return text.toString().toLowerCase().replace(/\s+/g, '-').replace(/[+&]/g, 'and').replace(/[^\w-]+/g, '').replace(/--+/g, '-').replace(/^-+/, '').replace(/-+$/, ''); }
@@ -92,12 +91,99 @@ function renderCategories(filterCategory = null) { if (!categoryGroups) return; 
 // --- PLAYER LOGIC ---
 function syncShakaHTML5FullscreenOverlay() { if (!playerContainer.classList.contains('html5-fullscreen-active')) { playerContainer.classList.remove('shaka-controls-active'); return; } const shakaControls = shakaPlayerWrapperFullPage.querySelector('.shaka-controls-container'); playerContainer.classList.toggle('shaka-controls-active', shakaControls && !shakaControls.classList.contains('shaka-controls-hidden')); }
 function setupShakaControlsObserver() { if (shakaControlsObserver) shakaControlsObserver.disconnect(); const shakaUIContainer = shakaPlayerWrapperFullPage.querySelector('.shaka-video-container'); if (!shakaUIContainer) { console.warn("Shaka UI container for observer not found in .shaka-player-wrapper-fullpage"); return; } shakaControlsObserver = new MutationObserver(syncShakaHTML5FullscreenOverlay); shakaControlsObserver.observe(shakaUIContainer, { attributes: true, attributeFilter: ['class'], subtree: true }); setTimeout(syncShakaHTML5FullscreenOverlay, 100); }
-async function initializeShakaPlayerInstance(channel) { const manifestUri = channel.manifestUri; if (!manifestUri || manifestUri === "#") { alert(`Stream URL for ${channel.name} is not available.`); await closePlayerCompletely(); return false; } const drmConfig = channel.clearKey && Object.keys(channel.clearKey).length > 0 ? { drm: { clearKeys: channel.clearKey } } : {}; if (typeof shaka === 'undefined' || !shaka.Player.isBrowserSupported()) { alert('Shaka Player is not supported on this browser.'); await closePlayerCompletely(); return false; } if (shakaPlayer) { try { await shakaPlayer.destroy(); } catch (e) { console.error('Error destroying previous player:', e); } shakaPlayer = null; } shakaPlayer = new shaka.Player(shakaVideoElement); shakaPlayer.configure(drmConfig); shakaPlayer.addEventListener('error', async (event) => { console.error('Shaka Player Error:', event.detail); alert(`Error loading stream: ${event.detail.message || event.detail.code}`); await closePlayerCompletely(); }); try { await shakaPlayer.load(manifestUri); setupShakaControlsObserver(); await shakaVideoElement.play().catch(err => console.warn("Autoplay prevented:", err)); return true; } catch (error) { if (!(error.code && shaka.util && error.code === shaka.util.Error.Code.LOAD_INTERRUPTED)) { alert(`Failed to load stream for ${channel.name}.`); console.error('Shaka Load Error:', error); } await closePlayerCompletely(); return false; } }
+
+async function initializeShakaPlayerInstance(channel) {
+    const manifestUri = channel.manifestUri;
+    if (!manifestUri || manifestUri === "#") {
+        alert(`Stream URL for ${channel.name} is not available.`);
+        await closePlayerCompletely();
+        return false;
+    }
+
+    const drmConfig = channel.clearKey && Object.keys(channel.clearKey).length > 0 ? { drm: { clearKeys: channel.clearKey } } : {};
+
+    // Configuration specifically for live streaming
+    const liveStreamingConfig = {
+        streaming: {
+            rebufferingGoal: 4,      // Seconds of buffer to achieve before playing after a rebuffer
+            bufferingGoal: 10,       // Seconds of buffer to accumulate before starting playback or resuming
+            bufferBehind: 30,        // Max seconds of buffer to keep behind the playhead (helps with DVR if manifest supports)
+            jumpLargeGaps: true,     // Allows the player to jump over large gaps in the media timeline
+            stallEnabled: true,      // Enable stall detection
+            stallThreshold: 1,       // Seconds before a stall is detected
+            stallSkip: 0.1,          // Seconds to skip when stalled to try to recover
+        },
+        manifest: {
+            dash: {
+                // autoCorrectDrift: true, // Consider enabling if facing clock drift issues with specific live MPDs
+            }
+        },
+    };
+
+    if (typeof shaka === 'undefined' || !shaka.Player.isBrowserSupported()) {
+        alert('Shaka Player is not supported on this browser.');
+        await closePlayerCompletely();
+        return false;
+    }
+
+    if (shakaPlayer) {
+        try {
+            await shakaPlayer.destroy();
+        } catch (e) {
+            console.error('Error destroying previous player:', e);
+        }
+        shakaPlayer = null;
+    }
+
+    shakaPlayer = new shaka.Player(shakaVideoElement);
+
+    // Merge live streaming config with DRM config carefully
+    let finalConfig = { ...liveStreamingConfig };
+    if (drmConfig.drm) {
+        finalConfig.drm = { ...(finalConfig.drm || {}), ...drmConfig.drm };
+    }
+    // Deep merge for streaming and manifest objects if they exist
+    if (liveStreamingConfig.streaming) {
+        finalConfig.streaming = { ...liveStreamingConfig.streaming, ...(drmConfig.streaming || {}) };
+    }
+    if (liveStreamingConfig.manifest) {
+        finalConfig.manifest = { ...liveStreamingConfig.manifest, ...(drmConfig.manifest || {}) };
+         if (liveStreamingConfig.manifest.dash && (drmConfig.manifest?.dash || {})) { // Check if dash exists in both
+            finalConfig.manifest.dash = { ...liveStreamingConfig.manifest.dash, ...drmConfig.manifest.dash };
+        } else if (drmConfig.manifest?.dash) { // If only in drmConfig
+            finalConfig.manifest.dash = { ...drmConfig.manifest.dash };
+        }
+    }
+
+    shakaPlayer.configure(finalConfig);
+
+    shakaPlayer.addEventListener('error', async (event) => {
+        console.error('Shaka Player Error:', event.detail);
+        alert(`Error loading stream: ${event.detail.message || event.detail.code}`);
+        await closePlayerCompletely();
+    });
+
+    try {
+        await shakaPlayer.load(manifestUri);
+        console.log(`Stream loaded: ${channel.name}. Is Live: ${shakaPlayer.isLive()}`); // Diagnostic log
+        setupShakaControlsObserver();
+        await shakaVideoElement.play().catch(err => console.warn("Autoplay prevented:", err));
+        return true;
+    } catch (error) {
+        if (!(error.code && shaka.util && error.code === shaka.util.Error.Code.LOAD_INTERRUPTED)) {
+             alert(`Failed to load stream for ${channel.name}.`);
+             console.error('Shaka Load Error:', error);
+        }
+        await closePlayerCompletely();
+        return false;
+    }
+}
+
 function navigateToPlayChannel(channel, viewContext, categorySlugContext = null) { const channelSlug = slugify(channel.name); let newRelativePath = ''; let pageTitle = `${channel.name} | Playing | flow+`; let historyStateData = { page: 'player', channelSlug: channelSlug, channelName: channel.name }; if (viewContext === 'home-top-channels') { newRelativePath = `/home/top-channels/${channelSlug}`; } else if (viewContext === 'live-tv' && categorySlugContext) { newRelativePath = `/live-tv/${categorySlugContext}/${channelSlug}`; } else if (viewContext === 'home-feature-slider') { newRelativePath = `/home/featured/${channelSlug}`; } else { const catSlug = channel.category ? slugify(channel.category) : 'general'; newRelativePath = `/live-tv/${catSlug}/${channelSlug}`; } updateUrlAndTitle(newRelativePath, pageTitle, historyStateData); openFullPagePlayer(channel); }
 async function openFullPagePlayer(channelData) { if (!playerContainer || !channelData) return; currentPlayingChannelData = channelData; playerTitleFullPage.textContent = channelData.name || 'Live Stream'; playerCategoryFullPage.textContent = channelData.category || 'Channel'; playerLiveIconFullPage.style.display = 'inline-flex'; renderSuggestedChannelsFullPage(channelData); const playerInitialized = await initializeShakaPlayerInstance(channelData); if (playerInitialized) { isPlayerActive = true; isPlayerFullPageVisible = true; isPlayerMinimizedBarVisible = false; playerContainer.classList.add('active', 'full-page-active'); playerContainer.classList.remove('minimized-bar-active', 'html5-fullscreen-active', 'shaka-controls-active'); bodyElement.classList.add('player-fullpage-active-no-scroll'); bodyElement.classList.remove('player-minimized-bar-active'); } else { await closePlayerCompletely(null, true); } }
 async function minimizeToBarPlayer() { if (!isPlayerFullPageVisible || !currentPlayingChannelData) return; if (document.fullscreenElement || document.webkitFullscreenElement) { try { if (document.exitFullscreen) await document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } catch (err) { console.warn("Exit fullscreen error on minimize:", err); } } isPlayerFullPageVisible = false; isPlayerMinimizedBarVisible = true; minimizedBarLogo.src = currentPlayingChannelData.logo || ''; minimizedBarTitle.textContent = currentPlayingChannelData.name || 'Channel'; minimizedBarCategory.textContent = currentPlayingChannelData.category || 'Category'; playerContainer.classList.remove('full-page-active'); playerContainer.classList.add('minimized-bar-active'); bodyElement.classList.remove('player-fullpage-active-no-scroll'); bodyElement.classList.add('player-minimized-bar-active'); if (shakaVideoElement.paused) shakaVideoElement.play().catch(e => console.warn("Play on minimize to bar failed:", e)); }
 async function expandFromBarPlayer() { if (!isPlayerMinimizedBarVisible || !currentPlayingChannelData) return; isPlayerMinimizedBarVisible = false; isPlayerFullPageVisible = true; playerContainer.classList.remove('minimized-bar-active'); playerContainer.classList.add('full-page-active'); bodyElement.classList.remove('player-minimized-bar-active'); bodyElement.classList.add('player-fullpage-active-no-scroll'); if (shakaVideoElement.paused) shakaVideoElement.play().catch(e => console.warn("Play on expand from bar failed:", e)); }
-async function closePlayerCompletely(event = null, calledInternally = false) { if (event) event.stopPropagation(); if (!isPlayerActive && !calledInternally) return; const wasActive = isPlayerActive; isPlayerActive = false; isPlayerFullPageVisible = false; isPlayerMinimizedBarVisible = false; if (document.fullscreenElement || document.webkitFullscreenElement) try { if (document.exitFullscreen) await document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } catch (err) { console.warn("Exit fullscreen error on close:", err); } playerContainer.classList.remove('active', 'full-page-active', 'minimized-bar-active', 'html5-fullscreen-active', 'shaka-controls-active'); bodyElement.classList.remove('player-fullpage-active-no-scroll', 'player-minimized-bar-active'); const posterUrl = "https://media-hosting.imagekit.io/737e3bd020364a85/Adobe%20Express%20-%20file%20(1).png?Expires=1841702531&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=w~U3akzU1ZRF85a~8oKFxhfHyCbfwM~FOcp3Thmzf6GDbBHiYc5RYA7j~2ACWpN~CEpS18D3kjIcrcmcMB7sJh~AsvKHzKuk-Vm8STfNkwMEfV9QHcBRW5aq7vE02UJAuJcs-rrdPSpD1eidOu66x1JNykbQI7rRXd1Z6GJdl4UUcp9ZORqrmIYoEkTs38Ml3kEABKMcPRg5hy8aRTIbbqvYACKx~8UXwZRiTzsJiPRMNmpcPk9tqiOWNpicxiv~ZEONzXwOQ-ASiSjMkF0aC3TFWWmZg-Lcl4ngVdGlBe4Vxbf0RFWl4-4LARcQq2lfeHno3KZrN4jt8SM6oWUDKw__"; if (shakaPlayer) { try { shakaVideoElement.pause(); shakaVideoElement.src = ''; shakaVideoElement.removeAttribute('src'); shakaVideoElement.load(); shakaVideoElement.poster = posterUrl; if (shakaControlsObserver) shakaControlsObserver.disconnect(); await shakaPlayer.unload(); await shakaPlayer.destroy(); } catch (e) { console.error('Error closing/destroying player:', e); } finally { shakaPlayer = null; } } else { shakaVideoElement.pause(); shakaVideoElement.src = ''; shakaVideoElement.removeAttribute('src'); shakaVideoElement.load(); shakaVideoElement.poster = posterUrl; } playerTitleFullPage.textContent = ''; playerCategoryFullPage.textContent = ''; playerLiveIconFullPage.style.display = 'none'; minimizedBarLogo.src = ''; minimizedBarTitle.textContent = ''; minimizedBarCategory.textContent = ''; suggestedChannelsListFullPage.innerHTML = '<p class="loading-text">Loading suggestions...</p>'; currentPlayingChannelData = null; if (!calledInternally && wasActive) { const currentPath = window.location.pathname.substring(basePath.length); const segments = currentPath.split('/').filter(Boolean); let parentPath = '/home'; if (segments.length > 0) { const routeContext = segments[0]; if ((routeContext === 'home' || routeContext === 'featured') && segments.length > 1) parentPath = '/home'; else if (routeContext === 'live-tv' && segments.length > 1) parentPath = segments.length > 2 ? `/${segments[0]}/${segments[1]}` : `/${segments[0]}`; } const currentRelativePath = currentPath || '/'; const targetRelativePath = parentPath.startsWith('/') ? parentPath : '/' + parentPath; if (currentRelativePath !== targetRelativePath && currentRelativePath + '/' !== targetRelativePath && currentRelativePath !== targetRelativePath + '/') { history.pushState({}, '', basePath + parentPath); handleRouteChange(); } else { handleRouteChange(); } } }
+async function closePlayerCompletely(event = null, calledInternally = false) { if (event) event.stopPropagation(); if (!isPlayerActive && !calledInternally) return; const wasActive = isPlayerActive; isPlayerActive = false; isPlayerFullPageVisible = false; isPlayerMinimizedBarVisible = false; if (document.fullscreenElement || document.webkitFullscreenElement) try { if (document.exitFullscreen) await document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } catch (err) { console.warn("Exit fullscreen error on close:", err); } playerContainer.classList.remove('active', 'full-page-active', 'minimized-bar-active', 'html5-fullscreen-active', 'shaka-controls-active'); bodyElement.classList.remove('player-fullpage-active-no-scroll', 'player-minimized-bar-active'); const posterUrl = "https://raw.githubusercontent.com/Flow-Streaming-Co-Ltd/flowplus/refs/heads/host/flow_plus_blackbg.png"; if (shakaPlayer) { try { shakaVideoElement.pause(); shakaVideoElement.src = ''; shakaVideoElement.removeAttribute('src'); shakaVideoElement.load(); shakaVideoElement.poster = posterUrl; if (shakaControlsObserver) shakaControlsObserver.disconnect(); await shakaPlayer.unload(); await shakaPlayer.destroy(); } catch (e) { console.error('Error closing/destroying player:', e); } finally { shakaPlayer = null; } } else { shakaVideoElement.pause(); shakaVideoElement.src = ''; shakaVideoElement.removeAttribute('src'); shakaVideoElement.load(); shakaVideoElement.poster = posterUrl; } playerTitleFullPage.textContent = ''; playerCategoryFullPage.textContent = ''; playerLiveIconFullPage.style.display = 'none'; minimizedBarLogo.src = ''; minimizedBarTitle.textContent = ''; minimizedBarCategory.textContent = ''; suggestedChannelsListFullPage.innerHTML = '<p class="loading-text">Loading suggestions...</p>'; currentPlayingChannelData = null; if (!calledInternally && wasActive) { const currentPath = window.location.pathname.substring(basePath.length); const segments = currentPath.split('/').filter(Boolean); let parentPath = '/home'; if (segments.length > 0) { const routeContext = segments[0]; if ((routeContext === 'home' || routeContext === 'featured') && segments.length > 1) parentPath = '/home'; else if (routeContext === 'live-tv' && segments.length > 1) parentPath = segments.length > 2 ? `/${segments[0]}/${segments[1]}` : `/${segments[0]}`; } const currentRelativePath = currentPath || '/'; const targetRelativePath = parentPath.startsWith('/') ? parentPath : '/' + parentPath; if (currentRelativePath !== targetRelativePath && currentRelativePath + '/' !== targetRelativePath && currentRelativePath !== targetRelativePath + '/') { history.pushState({}, '', basePath + parentPath); handleRouteChange(); } else { handleRouteChange(); } } }
 function renderSuggestedChannelsFullPage(currentChannel) { if (!suggestedChannelsListFullPage || typeof streams === 'undefined' || !Array.isArray(streams) || !currentChannel) { if (suggestedChannelsListFullPage) suggestedChannelsListFullPage.innerHTML = '<p class="loading-text">No suggestions available.</p>'; return; } suggestedChannelsListFullPage.innerHTML = ''; let suggestions = streams.filter(stream => stream.category === currentChannel.category && stream.name !== currentChannel.name).slice(0, 8); if (suggestions.length < 4) { const fallbackSuggestions = streams.filter(s => s.name !== currentChannel.name).sort(() => 0.5 - Math.random()).slice(0, 4 - suggestions.length); suggestions.push(...fallbackSuggestions.filter(fs => !suggestions.find(s => s.name === fs.name))); } if (suggestions.length === 0) { suggestedChannelsListFullPage.innerHTML = '<p class="loading-text">No other channels to suggest.</p>'; return; } suggestions.forEach(stream => { const card = createChannelCard(stream, streams.indexOf(stream), 'suggested-channel'); suggestedChannelsListFullPage.appendChild(card); }); }
 
 // --- SEARCH ---
@@ -121,10 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     desktopNavItems.forEach(item => { if (item) item.onclick = function() { switchTabAndUrl(this.dataset.targetPage); }; });
 
-    // Player Event Listeners
     if (playerMinimizeBtn) playerMinimizeBtn.onclick = minimizeToBarPlayer;
     if (playerMinimizedBar) playerMinimizedBar.onclick = (event) => {
-        // Don't expand if click was on the close button itself
         if (event.target !== minimizedBarCloseBtn && !minimizedBarCloseBtn.contains(event.target)) {
             expandFromBarPlayer();
         }
