@@ -51,8 +51,8 @@
     --channel-card-horizontal-gap: 14px;
     --category-list-padding: 18px;
 
-    --logo-desktop-bg-light: rgba(255, 255, 255, 0.85); /* Kept for potential other logo uses, but made transparent for main logo */
-    --logo-desktop-bg-dark: rgba(31, 31, 31, 0.85); /* Kept for potential other logo uses */
+    --logo-desktop-bg-light: rgba(255, 255, 255, 0.85);
+    --logo-desktop-bg-dark: rgba(31, 31, 31, 0.85);
     --always-white: #ffffff;
 }
 
@@ -88,7 +88,7 @@ body.dark-mode {
 }
 
 body { margin: 0; background: var(--bg-gradient-end); font-family: 'gilroy-bold', sans-serif; color: var(--text-primary); padding-bottom: var(--footer-height); -webkit-tap-highlight-color: transparent; transition: background 0.3s ease, color 0.3s ease, padding-bottom 0.3s ease-out; overflow-x: hidden; }
-body.player-fullpage-active-no-scroll { overflow-y: hidden; } /* Prevent body scroll when full-page player is active */
+body.player-fullpage-active-no-scroll { overflow-y: hidden; }
 body.player-minimized-bar-active { padding-bottom: calc(var(--footer-height) + var(--minimized-player-bar-height)); }
 
 .topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 18px; height: var(--topbar-height); box-sizing: border-box; position: fixed; top:0; left:0; right:0; background:transparent; z-index: 150; transition: background-color 0.3s ease, box-shadow 0.3s ease;}
@@ -141,12 +141,31 @@ body.home-at-top .home-page-content-below-hero { background-color: transparent; 
 body.home-at-top .section-title { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.7); }
 body.home-at-top .section-title .material-symbols-outlined { color: var(--accent-primary); }
 
-.horizontal-list { display: flex; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 10px; margin-bottom: 14px; min-height: 110px; align-items: flex-end; }
+.horizontal-list { display: flex; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 10px; margin-bottom: 14px; min-height: 110px; align-items: flex-end; } /* align-items: flex-end is default here */
 .horizontal-list::-webkit-scrollbar { display: none;}
 .loading-text { color: var(--text-secondary); padding: 10px; width: 100%; text-align: center; font-size: 0.9em; align-self: center; }
-body.home-at-top .loading-text:not(.search-results-modal .loading-text) { color: #bbb; } /* Hero/Top channels loading on dark bg */
+body.home-at-top .loading-text:not(.search-results-modal .loading-text) { color: #bbb; }
 
-.channel-card { width: var(--channel-card-width); aspect-ratio: 16 / 9; height: auto; background-color: var(--card-bg); border-radius: 12px; padding: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: transform 0.15s ease-out, box-shadow 0.15s ease-out; border: none; box-shadow: 0 4px 10px var(--card-shadow); flex-shrink: 0; overflow: hidden; }
+.channel-card {
+    width: var(--channel-card-width);
+    aspect-ratio: 16 / 9;
+    height: auto;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    border: none;
+    box-shadow: 0 4px 10px var(--card-shadow);
+    flex-shrink: 0;
+    overflow: hidden;
+    box-sizing: border-box; /* ADDED for consistency */
+}
 .channel-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: var(--logo-url); background-size: cover; background-position: center; filter: blur(var(--channel-card-blur-amount)) brightness(100%) saturate(100%); opacity: var(--channel-card-blur-opacity); border-radius: inherit; z-index: 0; transform: scale(1.1); }
 .channel-card:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 7px 18px var(--card-shadow); }
 .channel-card img { max-width: 80%; max-height: 70%; object-fit: contain; border: none; margin-bottom: 0; display: block; position: relative; z-index: 1; }
@@ -164,7 +183,7 @@ body.home-at-top .loading-text:not(.search-results-modal .loading-text) { color:
 .category-group { margin-bottom: 28px; margin-top: 25px; }
 .category-title { font-size: 1.2em; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; transition: color 0.3s ease; display: flex; align-items: center; gap: 8px; }
 .category-title .material-symbols-outlined { font-size: 1em; color: var(--accent-primary); }
-.category-channels { display: flex; gap: var(--channel-card-horizontal-gap); overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; padding-bottom: 10px; min-height: calc(var(--channel-card-width) * 9 / 16 + 20px); align-items: flex-start; box-sizing: border-box; }
+.category-channels { display: flex; gap: var(--channel-card-horizontal-gap); overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; padding-bottom: 10px; min-height: calc(var(--channel-card-width) * 9 / 16 + 20px); align-items: flex-start; box-sizing: border-box; } /* align-items: flex-start is default here */
 .category-channels::-webkit-scrollbar { display: none;}
 
 .footer-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--footer-height); background: var(--footer-bg); border-radius: 0; display: flex; justify-content: space-around; align-items: stretch; padding: 0; border-top: 1px solid var(--footer-border); z-index: 1000; box-shadow: 0 -3px 15px var(--card-shadow); box-sizing: border-box; transition: background-color 0.3s ease, border-color 0.3s ease; }
@@ -307,11 +326,11 @@ body.home-at-top .loading-text:not(.search-results-modal .loading-text) { color:
 
 .minimized-logo-container {
     position: relative;
-    width: calc(var(--minimized-player-bar-height) * 19 / 9); /* Approx 19:6 using height, adjust ratio as needed */
-    height: calc(var(--minimized-player-bar-height) * 0.75); /* 75% of bar height */
-    max-width: 100px; /* Max width for logo */
+    width: calc(var(--minimized-player-bar-height) * 19 / 9); 
+    height: calc(var(--minimized-player-bar-height) * 0.75); 
+    max-width: 100px; 
     margin-right: 10px;
-    background-color: #ccc; /* Placeholder bg */
+    background-color: #ccc; 
     border-radius: 4px;
     overflow: hidden;
     flex-shrink: 0;
@@ -334,7 +353,7 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
 
 
 /* HTML5 Fullscreen Player Info Overlay (Shaka's default controls) */
-#shaka-player-container .player-info-overlay { /* This refers to a potential Shaka internal overlay */
+#shaka-player-container .player-info-overlay { 
     position: absolute; left: 20px; top: 50%; transform: translateY(-50%); z-index: 5050;
     color: #fff; background-color: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 8px;
     display: flex; align-items: center; gap: 12px; opacity: 0; pointer-events: none;
@@ -374,7 +393,7 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
    a.logo img { height: 30px; }
    .topbar .material-symbols-outlined { font-size: 26px; }
    .section-title, .category-title { font-size: 1.2em; }
-   .channel-card { width: calc(var(--channel-card-width) * 0.85); }
+   .channel-card { width: calc(var(--channel-card-width) * 0.85); } /* Mobile channel cards are smaller */
    .channel-card .channel-live-icon { font-size: 16px; top: 4px; right: 4px; }
    .footer-item .footer-icon { font-size: 22px; }
    .footer-label { font-size: 12px; }
@@ -387,7 +406,7 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
     .player-category-fullpage { font-size: 0.8em; }
     .suggested-channels-header-fullpage { font-size: 1em; padding-left: 15px; padding-right: 15px; }
     .suggested-channels-list-fullpage { padding-left: 15px; padding-right: 15px; gap: 10px; }
-    .suggested-channels-list-fullpage .channel-card { width: calc(var(--channel-card-width) * 0.75); }
+    .suggested-channels-list-fullpage .channel-card { width: calc(var(--channel-card-width) * 0.75); } /* Mobile suggested cards are smaller */
 
     .player-minimized-bar { bottom: var(--footer-height-small); height: var(--minimized-player-bar-height-small); }
     .minimized-logo-container { height: calc(var(--minimized-player-bar-height-small) * 0.7); width: calc(var(--minimized-player-bar-height-small) * 0.7 * 19 / 9); }
@@ -398,36 +417,26 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
 
 @media (min-width: 1024px) {
     :root {
-        /* --channel-card-width: 200px; /* This variable is now directly applied below */
         --desktop-nav-width: 70px;
         --category-list-padding-desktop: 40px;
-    }
-    /* Desktop specific re-definition of --channel-card-width.
-       This ensures it's 200px in this media query context for rules using it. */
-    :root {
-        --channel-card-width: 200px;
+        --channel-card-width: 200px; /* Explicitly set for desktop context */
     }
 
-    body { padding-bottom: 0 !important; } /* No footer nav, no body padding for it */
-    body.player-minimized-bar-active { padding-bottom: var(--minimized-player-bar-height) !important; } /* Padding for minimized bar */
+    body { padding-bottom: 0 !important; }
+    body.player-minimized-bar-active { padding-bottom: var(--minimized-player-bar-height) !important; }
     .footer-nav { display: none !important; }
 
-    /* MODIFIED: Logo position and appearance */
     .topbar a.logo {
         position: fixed;
-        top: 15px; /* Adjusted from bottom/right */
-        left: 15px;  /* Adjusted from bottom/right */
+        top: 15px;
+        left: 15px;
         z-index: 1600;
-        padding: 0; /* Removed padding as background is transparent */
-        background-color: transparent !important; /* Removed background */
-        box-shadow: none !important; /* Removed shadow */
+        padding: 0;
+        background-color: transparent !important;
+        box-shadow: none !important;
         height: auto;
-        /* transition: none; Removed background transition */
     }
-    /* body.dark-mode .topbar a.logo - no longer needed due to transparent bg */
-    .topbar a.logo img { height: 32px; /* Adjusted size slightly if needed */ }
-    /* body.home-at-top .topbar a.logo - no longer needed for bg */
-    /* body.dark-mode.home-at-top .topbar a.logo - no longer needed for bg */
+    .topbar a.logo img { height: 32px; }
 
     .topbar { padding-left: 25px; padding-right: 25px; left: var(--desktop-nav-width); width: calc(100% - var(--desktop-nav-width)); justify-content: flex-end; }
     .topbar .topbar-icons { display: none !important; }
@@ -442,7 +451,6 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
 
     #mainContainer { padding-top: var(--topbar-height); padding-left: var(--desktop-nav-width); }
     
-    /* MODIFIED: Profile/Categories page layout */
     .categories-page, .profile-page {
         padding: 30px var(--category-list-padding-desktop);
         box-sizing: border-box;
@@ -453,7 +461,12 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
 
     .home-page-content-below-hero .section-title-container, .home-page-content-below-hero .horizontal-list { padding-left: var(--category-list-padding-desktop); padding-right: var(--category-list-padding-desktop); }
     #homeSection { padding-left: 0; }
-    .home-hero-background { left: var(--desktop-nav-width); width: calc(100% - var(--desktop-nav-width)); }
+    
+    /* MODIFIED: Feature background to extend behind nav */
+    .home-hero-background {
+        left: 0; /* CHANGED */
+        width: 100%; /* CHANGED */
+    }
     .hero-content-area-wrapper { height: var(--hero-content-visual-height-desktop); min-height: var(--hero-content-visual-min-height-desktop); max-height: var(--hero-content-visual-max-height-desktop); }
     .home-hero-content { bottom: 65px; padding: 0 40px 40px 40px; height: auto; min-height: unset; max-height: unset; }
     .home-hero-content .feature-title { font-size: 2.8em; font-weight: 800; }
@@ -467,31 +480,29 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
         padding-bottom: 15px;
         scrollbar-width: thin;
         scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+        /* align-items will default to stretch if not specified, which is often better for aspect-ratio items */
     }
-    /* Updated min-height for horizontal-list and category-channels based on 16:9 aspect ratio */
     .horizontal-list {
-        min-height: calc(var(--channel-card-width) * 9 / 16 + 15px); /* Adjusted for 16:9 + padding */
+        min-height: calc(var(--channel-card-width) * 9 / 16 + 15px);
+        /* align-items: flex-end; REMOVED - let it default to stretch */
+    }
+    .category-channels {
+        min-height: calc(var(--channel-card-width) * 9 / 16 + 30px);
+        /* align-items: flex-start; REMOVED - let it default to stretch */
     }
     .horizontal-list::-webkit-scrollbar, .category-channels::-webkit-scrollbar, .suggested-channels-list-fullpage::-webkit-scrollbar { display: block; height: 8px; }
     .horizontal-list::-webkit-scrollbar-track, .category-channels::-webkit-scrollbar-track, .suggested-channels-list-fullpage::-webkit-scrollbar-track { background: var(--scrollbar-track); border-radius: 4px; }
     .horizontal-list::-webkit-scrollbar-thumb, .category-channels::-webkit-scrollbar-thumb, .suggested-channels-list-fullpage::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 4px; }
     .horizontal-list:hover::-webkit-scrollbar-thumb, .category-channels:hover::-webkit-scrollbar-thumb, .suggested-channels-list-fullpage:hover::-webkit-scrollbar-thumb { background-color: #888; body.light-mode & { background-color: #a0a0a0; } }
     
-    /* MODIFIED: Ensure general channel cards use the desktop width and 16:9 aspect ratio */
+    /* Desktop Channel Card - width and aspect-ratio are primary drivers */
     .channel-card {
-        width: var(--channel-card-width); /* Explicitly use the 200px var */
-        aspect-ratio: 16 / 9; /* CORRECTED: Set 16:9 aspect ratio for desktop */
-        /* height: auto; This is implicit with aspect-ratio and width */
+        width: var(--channel-card-width); /* Uses 200px from :root in this media query */
+        aspect-ratio: 16 / 9; /* Ensures 16:9 */
     }
     .channel-card:hover { transform: scale(1.05); box-shadow: 0 8px 25px var(--card-shadow); }
     .channel-card::before { filter: blur(var(--channel-card-blur-amount)) brightness(100%) saturate(100%); }
-    /* The img styles .channel-card img are already defined globally and should work well for balancing logos:
-       max-width: 80%; max-height: 70%; object-fit: contain;
-    */
     
-    .category-channels {
-        min-height: calc(var(--channel-card-width) * 9 / 16 + 30px); /* CORRECTED: Adjusted min-height for 16:9 card aspect ratio */
-    }
     .category-pill { padding: 9px 18px; font-size: 0.95em; }
     .section-title-container { margin: 35px 0 20px 0; }
     .section-title, .category-title { font-size: 1.2em; }
@@ -506,9 +517,8 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
     .player-suggested-channels-fullpage .suggested-channels-header-fullpage,
     .player-suggested-channels-fullpage .suggested-channels-list-fullpage { padding-left: var(--category-list-padding-desktop); padding-right: var(--category-list-padding-desktop); }
     
-    /* Suggested channels will inherit .channel-card's 16:9 aspect ratio */
     .suggested-channels-list-fullpage .channel-card {
-        width: var(--channel-card-width); /* Will use 200px, inherits 16/9 aspect ratio */
+        width: var(--channel-card-width); /* Uses 200px, inherits 16/9 aspect ratio from general .channel-card style */
     }
 
     .player-minimized-bar { bottom: 0 !important; left: var(--desktop-nav-width) !important; width: calc(100% - var(--desktop-nav-width)) !important; border-left: 1px solid var(--player-minimized-bar-border); }
