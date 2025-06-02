@@ -12,6 +12,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <div id="pageLoader" class="page-loader-container">
+    <div class="app-loader-ring"></div>
+  </div>
+
   <div class="topbar">
     <a href="#" class="logo" title="Reload flow+">
         <img src="https://raw.githubusercontent.com/Flow-Streaming-Co-Ltd/flowplus/refs/heads/host/flow_plus_logo.png" alt="flow+ Logo" id="logoImage">
@@ -96,7 +101,6 @@
   </footer>
 
   <div class="player-container" id="playerContainer">
-    <!-- Full Page Player Box -->
     <div class="player-box-fullpage" id="playerBoxFullPage">
         <span class="material-symbols-outlined player-minimize-btn" id="playerMinimizeBtn" title="Minimize Player">keyboard_arrow_down</span>
         
@@ -123,7 +127,6 @@
         </div>
     </div>
 
-    <!-- Minimized Player Bar (above footer) -->
     <div class="player-minimized-bar" id="playerMinimizedBar">
         <div class="minimized-logo-container">
             <img id="minimizedBarLogo" src="" alt="Channel Logo" class="minimized-bar-logo-img">
