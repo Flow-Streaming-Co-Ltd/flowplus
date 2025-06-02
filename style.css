@@ -373,7 +373,7 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
 
    a.logo img { height: 30px; }
    .topbar .material-symbols-outlined { font-size: 26px; }
-   .section-title, .category-title { font-size: 1.2em; } /* Updated: was 1.6em */
+   .section-title, .category-title { font-size: 1.2em; }
    .channel-card { width: calc(var(--channel-card-width) * 0.85); }
    .channel-card .channel-live-icon { font-size: 16px; top: 4px; right: 4px; }
    .footer-item .footer-icon { font-size: 22px; }
@@ -445,8 +445,6 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
     /* MODIFIED: Profile/Categories page layout */
     .categories-page, .profile-page {
         padding: 30px var(--category-list-padding-desktop);
-        /* max-width: 1600px; Removed for full-width behavior like home section rows */
-        /* margin: 0 auto; Removed for full-width behavior */
         box-sizing: border-box;
     }
     .categories-page .categories-header, .categories-page .category-title, .categories-page .category-pills-container, .categories-page .category-channels,
@@ -464,33 +462,54 @@ body.dark-mode .minimized-bar-controls .material-symbols-outlined:hover { backgr
     .home-hero-content .feature-desc { font-size: 1.1em; }
     .home-hero-content .feature-dots-container .feature-dot { width: 10px; height: 10px; }
 
-    .horizontal-list, .category-channels, .suggested-channels-list-fullpage { gap: 18px; padding-bottom: 15px; scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); }
+    .horizontal-list, .category-channels, .suggested-channels-list-fullpage {
+        gap: 18px;
+        padding-bottom: 15px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    }
+    /* Updated min-height for horizontal-list and category-channels based on 16:9 aspect ratio */
+    .horizontal-list {
+        min-height: calc(var(--channel-card-width) * 9 / 16 + 15px); /* Adjusted for 16:9 + padding */
+    }
     .horizontal-list::-webkit-scrollbar, .category-channels::-webkit-scrollbar, .suggested-channels-list-fullpage::-webkit-scrollbar { display: block; height: 8px; }
     .horizontal-list::-webkit-scrollbar-track, .category-channels::-webkit-scrollbar-track, .suggested-channels-list-fullpage::-webkit-scrollbar-track { background: var(--scrollbar-track); border-radius: 4px; }
     .horizontal-list::-webkit-scrollbar-thumb, .category-channels::-webkit-scrollbar-thumb, .suggested-channels-list-fullpage::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 4px; }
     .horizontal-list:hover::-webkit-scrollbar-thumb, .category-channels:hover::-webkit-scrollbar-thumb, .suggested-channels-list-fullpage:hover::-webkit-scrollbar-thumb { background-color: #888; body.light-mode & { background-color: #a0a0a0; } }
     
-    /* MODIFIED: Ensure general channel cards use the desktop width consistently */
+    /* MODIFIED: Ensure general channel cards use the desktop width and 16:9 aspect ratio */
     .channel-card {
         width: var(--channel-card-width); /* Explicitly use the 200px var */
+        aspect-ratio: 16 / 9; /* CORRECTED: Set 16:9 aspect ratio for desktop */
+        /* height: auto; This is implicit with aspect-ratio and width */
     }
     .channel-card:hover { transform: scale(1.05); box-shadow: 0 8px 25px var(--card-shadow); }
     .channel-card::before { filter: blur(var(--channel-card-blur-amount)) brightness(100%) saturate(100%); }
-    .category-channels { min-height: calc(var(--channel-card-width) * 9 / 16 + 30px); } /* Uses the 200px var */
+    /* The img styles .channel-card img are already defined globally and should work well for balancing logos:
+       max-width: 80%; max-height: 70%; object-fit: contain;
+    */
+    
+    .category-channels {
+        min-height: calc(var(--channel-card-width) * 9 / 16 + 30px); /* CORRECTED: Adjusted min-height for 16:9 card aspect ratio */
+    }
     .category-pill { padding: 9px 18px; font-size: 0.95em; }
     .section-title-container { margin: 35px 0 20px 0; }
-    .section-title, .category-title { font-size: 1.2em; } /* Updated: was 1.6em for section-title */
+    .section-title, .category-title { font-size: 1.2em; }
 
     .search-modal .search-bar-modal { max-width: 600px; margin: 30px auto 20px auto; }
     .search-results-modal { max-width: 600px; margin: 0 auto; }
 
     .shaka-player-wrapper-fullpage { width: calc(100% - 80px); margin: 30px 40px 0 40px; border-radius: 20px;}
-    .player-details-area-fullpage { padding: 15px 45px; } /* Align with player wrapper margins */
+    .player-details-area-fullpage { padding: 15px 45px; }
     .player-title-fullpage { font-size: 1.6em; }
     .player-category-fullpage { font-size: 1em; }
     .player-suggested-channels-fullpage .suggested-channels-header-fullpage,
     .player-suggested-channels-fullpage .suggested-channels-list-fullpage { padding-left: var(--category-list-padding-desktop); padding-right: var(--category-list-padding-desktop); }
-    .suggested-channels-list-fullpage .channel-card { width: var(--channel-card-width); } /* Will use 200px */
+    
+    /* Suggested channels will inherit .channel-card's 16:9 aspect ratio */
+    .suggested-channels-list-fullpage .channel-card {
+        width: var(--channel-card-width); /* Will use 200px, inherits 16/9 aspect ratio */
+    }
 
     .player-minimized-bar { bottom: 0 !important; left: var(--desktop-nav-width) !important; width: calc(100% - var(--desktop-nav-width)) !important; border-left: 1px solid var(--player-minimized-bar-border); }
 }
